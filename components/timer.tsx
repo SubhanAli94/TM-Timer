@@ -18,10 +18,10 @@ const Timer: React.FC = () => {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null)
 
   // Configuration states
-  const [totalTime, setTotalTime] = useState<number>(480) // 8 minutes default
-  const [greenTime, setGreenTime] = useState<number>(180) // 3 minutes default
-  const [yellowTime, setYellowTime] = useState<number>(240) // 4 minutes default
-  const [redTime, setRedTime] = useState<number>(360) // 6 minutes default
+  const [totalTime, setTotalTime] = useState<number>(600) // 10 minutes default (5+3+2)
+  const [greenTime, setGreenTime] = useState<number>(300) // 5 minutes default
+  const [yellowTime, setYellowTime] = useState<number>(180) // 3 minutes default
+  const [redTime, setRedTime] = useState<number>(120) // 2 minutes default
 
   // Add state for validation errors
   const [errors, setErrors] = useState<string[]>([])
