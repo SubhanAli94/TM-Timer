@@ -27,10 +27,24 @@ const Timer: React.FC = () => {
   const [errors, setErrors] = useState<string[]>([])
 
   const baseOpacity = 0.1
-  const qualifiedOpacity = Math.max(baseOpacity, Math.min(1, (time - greenTime) / 60))
-  const warningOpacity = Math.max(baseOpacity, Math.min(1, (time - yellowTime) / 60))
-  const dangerOpacity = Math.max(baseOpacity, Math.min(1, (time - redTime) / 60))
-  const showDisqualified = time >= totalTime
+
+  // Green zone opacity: increases from 0-5 minutes
+  const qualifiedOpacity = Math.max(baseOpacity, Math.min(1, time / greenTime))
+
+  // Yellow zone opacity: increases from 5-8 minutes (after green time)
+  const warningOpacity = Math.max(
+    baseOpacity,
+    Math.min(1, time > greenTime ? (time - greenTime) / yellowTime : 0)
+  )
+
+  // Red zone opacity: increases from 8-10 minutes (after yellow time)
+  const dangerOpacity = Math.max(
+    baseOpacity,
+    Math.min(1, time > (greenTime + yellowTime) ? (time - greenTime - yellowTime) / redTime : 0)
+  )
+
+  // Show disqualified when total time is exceeded
+  const showDisqualified = time >= (greenTime + yellowTime + redTime)
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600)
