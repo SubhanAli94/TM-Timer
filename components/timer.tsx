@@ -72,7 +72,7 @@ const Timer: React.FC = () => {
       setIsRunning(true)
       const id = setInterval(() => {
         setTime((prevTime) => prevTime + 1)
-      }, 1000)
+      }, 100)
       setIntervalId(id)
     }
   }, [isRunning])
@@ -84,6 +84,14 @@ const Timer: React.FC = () => {
     setIsRunning(false)
     setTime(0)
     setIntervalId(null)
+
+    // Reset participant name and form data to defaults
+    setSpeakerName("") // Clear the participant name
+    setTotalTime(600) // Reset to default total time (10 minutes)
+    setGreenTime(300) // Reset to default green time (5 minutes)
+    setYellowTime(180) // Reset to default yellow time (3 minutes)
+    setRedTime(120) // Reset to default red time (2 minutes)
+    setErrors([]) // Clear any validation errors
   }, [intervalId])
 
   const stopTimer = useCallback(() => {
@@ -96,7 +104,7 @@ const Timer: React.FC = () => {
       const result: SpeechResult = {
         name: speakerName || 'Anonymous Speaker',
         time: time,
-        status: time >= (greenTime + yellowTime + redTime) ? 'Disqualified' : 'Qualified',
+        status: time < greenTime || time >= (greenTime + yellowTime + redTime) ? 'Disqualified' : 'Qualified',
         timestamp: new Date().toLocaleTimeString()
       }
       setSpeechResults(prev => [...prev, result])
