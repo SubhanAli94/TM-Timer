@@ -72,6 +72,14 @@ const Timer: React.FC = () => {
     setIntervalId(null)
   }, [intervalId])
 
+  const stopTimer = useCallback(() => {
+    if (intervalId) {
+      clearInterval(intervalId)
+      setIsRunning(false)
+      setIntervalId(null)
+    }
+  }, [intervalId])
+
   useEffect(() => {
     return () => {
       if (intervalId) {
@@ -205,6 +213,9 @@ const Timer: React.FC = () => {
                 variant={isRunning ? "secondary" : "default"}
               >
                 {isRunning ? "Running" : "Start"}
+              </Button>
+              <Button onClick={stopTimer} className="w-24" variant="secondary">
+                Stop
               </Button>
               <Button onClick={resetTimer} className="w-24" variant="outline">
                 Reset
