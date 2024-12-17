@@ -170,7 +170,7 @@ const Timer: React.FC = () => {
                     value={speakerName}
                     onChange={(e) => setSpeakerName(e.target.value)}
                     className="w-full p-2 border rounded"
-                    placeholder="Enter speaker's name"
+                    placeholder="Enter speaker&apos;s name"
                   />
                 </div>
                 <div className="col-span-2">
@@ -185,6 +185,7 @@ const Timer: React.FC = () => {
                     }}
                     className="w-full p-2 border rounded"
                     min="0"
+                    placeholder="Total Speech Time (minutes)"
                   />
                 </div>
                 <div>
