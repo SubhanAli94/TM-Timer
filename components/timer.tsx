@@ -11,7 +11,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog"
-
+import { MdSettings } from 'react-icons/md'; // Import the settings icon from Material Icons
 // Add interface for speech result
 interface SpeechResult {
   name: string;
@@ -145,9 +145,8 @@ const Timer: React.FC = () => {
             <Button
               variant="outline"
               size="sm"
-              className="absolute -top-2 -left-2 z-10 text-black"
-            >
-              ⚙️
+              className="justify-center border-black text-black fixed top-0 right-0 m-10 shadow-none">
+              <MdSettings className="mr-1 text-black" />Settings
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -244,8 +243,8 @@ const Timer: React.FC = () => {
           </DialogContent>
         </Dialog>
 
-        <Card className="w-full max-w-md mx-auto">
-          <CardContent className="p-6">
+        <div className="w-full max-w-md mx-auto justify-center">
+          <div className="p-6">
             <div className="flex flex-col items-center gap-6">
               {speakerName && (
                 <div className="text-lg font-semibold text-black">
@@ -295,11 +294,10 @@ const Timer: React.FC = () => {
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      {/* Results table moved outside the Card */}
       {speechResults.length > 0 && (
         <Card className="w-full max-w-md mx-auto">
           <CardContent className="p-6">
