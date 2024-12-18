@@ -145,7 +145,7 @@ const Timer: React.FC = () => {
             <Button
               variant="outline"
               size="sm"
-              className="justify-center border-black text-black fixed top-0 right-0 m-10 shadow-none">
+              className="justify-center border-black text-black fixed top-0 right-0 m-8 shadow-none">
               <MdSettings className="mr-1 text-black" />Settings
             </Button>
           </DialogTrigger>
