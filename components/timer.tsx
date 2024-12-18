@@ -163,7 +163,7 @@ const Timer: React.FC = () => {
               )}
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="text-sm">Speaker's Name</label>
+                  <label className="text-sm">Speaker&apos;s Name</label>
                   <input
                     type="text"
                     value={speakerName}
