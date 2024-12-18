@@ -3,7 +3,11 @@ import Timer from '@/components/timer'
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center pt-10">
-      <h1 className="text-4xl font-bold mb-8">TM Timer</h1>
+      <div className="flex justify-start items-start w-full">
+        <h1 className="text-3xl ml-10">
+          <span className="font-bold">TM</span> Timer
+        </h1>
+      </div>
       <Timer />
     </main>
   )

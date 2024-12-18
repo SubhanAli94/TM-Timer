@@ -138,7 +138,7 @@ const Timer: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 mt-10" >
       <div className="relative">
         <Dialog>
           <DialogTrigger asChild>
@@ -298,38 +298,40 @@ const Timer: React.FC = () => {
         </div>
       </div>
 
-      {speechResults.length > 0 && (
-        <Card className="w-full max-w-md mx-auto">
-          <CardContent className="p-6">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-2">Speaker</th>
-                  <th className="text-left py-2">Time</th>
-                  <th className="text-left py-2">Status</th>
-                  <th className="text-left py-2">Time Stopped</th>
-                </tr>
-              </thead>
-              <tbody>
-                {speechResults.map((result, index) => (
-                  <tr key={index} className="border-b">
-                    <td className="py-2">{result.name}</td>
-                    <td className="py-2">{formatTime(result.time)}</td>
-                    <td className={`py-2 ${result.status === 'Qualified'
-                      ? 'text-green-600'
-                      : 'text-red-600'
-                      }`}>
-                      {result.status}
-                    </td>
-                    <td className="py-2 text-gray-500">{result.timestamp}</td>
+      {
+        speechResults.length > 0 && (
+          <Card className="w-full max-w-md mx-auto">
+            <CardContent className="p-6">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-2">Speaker</th>
+                    <th className="text-left py-2">Time</th>
+                    <th className="text-left py-2">Status</th>
+                    <th className="text-left py-2">Time Stopped</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+                </thead>
+                <tbody>
+                  {speechResults.map((result, index) => (
+                    <tr key={index} className="border-b">
+                      <td className="py-2">{result.name}</td>
+                      <td className="py-2">{formatTime(result.time)}</td>
+                      <td className={`py-2 ${result.status === 'Qualified'
+                        ? 'text-green-600'
+                        : 'text-red-600'
+                        }`}>
+                        {result.status}
+                      </td>
+                      <td className="py-2 text-gray-500">{result.timestamp}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </CardContent>
+          </Card>
+        )
+      }
+    </div >
   )
 }
 
