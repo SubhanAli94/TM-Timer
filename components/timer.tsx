@@ -256,12 +256,11 @@ const Timer: React.FC = () => {
                 <Button
                   onClick={startTimer}
                   disabled={isRunning}
-                  className="w-24"
-                  variant={isRunning ? "secondary" : "default"}
-                >
+                  className="w-24 bg-green-500"
+                  variant={isRunning ? "secondary" : "default"}>
                   {isRunning ? "Running" : "Start"}
                 </Button>
-                <Button onClick={stopTimer} className="w-24" variant="secondary">
+                <Button onClick={stopTimer} className="w-24 bg-red-500 text-white" variant="secondary">
                   Stop
                 </Button>
                 <Button onClick={resetTimer} className="w-24" variant="outline">
