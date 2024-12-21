@@ -41,7 +41,7 @@ const Timer: React.FC = () => {
   const [speechResults, setSpeechResults] = useState<SpeechResult[]>([])
 
   // Add state for confirmation dialog
-  const [isConfirmingStop, setIsConfirmingStop] = useState(false);
+  const [isConfirmingPause, setIsConfirmingPause] = useState(false);
 
   // Add a new state to track if the timer has been started
   const [hasStarted, setHasStarted] = useState(false);
@@ -106,13 +106,13 @@ const Timer: React.FC = () => {
     setHasStarted(false);
   }, [intervalId])
 
-  const stopTimer = useCallback(() => {
+  const pauseTimer = useCallback(() => {
     if (intervalId) {
       clearInterval(intervalId)
       setIsRunning(false)
       setIntervalId(null)
 
-      // Add result when stopping
+      // Add result when pauseping
       const totalTimeLapsed = time + (showDisqualified ? gracePeriod : 0); // Include grace period if disqualified
       const result: SpeechResult = {
         name: speakerName || 'Anonymous Speaker',
@@ -156,22 +156,22 @@ const Timer: React.FC = () => {
   // Update the opacity for the grace period box
   const graceOpacity = time > (greenTime + yellowTime + redTime) ? elapsedGracePeriod / gracePeriod : 0.2; // Faded when not in grace period
 
-  // Function to handle stopping the timer
-  const handleStopTimer = () => {
+  // Function to handle pauseping the timer
+  const handlePauseTimer = () => {
     if (isRunning) { // Check if the timer is running
-      setIsConfirmingStop(true); // Show confirmation dialog
+      setIsConfirmingPause(true); // Show confirmation dialog
     }
   };
 
-  // Function to confirm stopping the timer
-  const confirmStopTimer = () => {
-    stopTimer(); // Call the existing stopTimer function
-    setIsConfirmingStop(false); // Close the dialog
+  // Function to confirm pauseping the timer
+  const confirmPauseTimer = () => {
+    pauseTimer(); // Call the existing pauseTimer function
+    setIsConfirmingPause(false); // Close the dialog
   };
 
   // Function to dismiss the confirmation dialog
-  const dismissStopTimer = () => {
-    setIsConfirmingStop(false); // Close the dialog
+  const dismissPauseTimer = () => {
+    setIsConfirmingPause(false); // Close the dialog
   };
 
   return (
@@ -297,8 +297,8 @@ const Timer: React.FC = () => {
                   variant={isRunning ? "secondary" : "default"}>
                   {isRunning ? "Running" : hasStarted ? "Resume" : "Start"}
                 </Button>
-                <Button onClick={handleStopTimer} className="w-24 bg-red-500 text-white" variant="secondary">
-                  Stop
+                <Button onClick={handlePauseTimer} className="w-24 bg-red-500 text-white" variant="secondary">
+                  {"Pause"}
                 </Button>
                 <Button onClick={resetTimer} className="w-24" variant="outline">
                   Reset
@@ -350,7 +350,7 @@ const Timer: React.FC = () => {
                     <th className="text-left py-2">Speaker</th>
                     <th className="text-left py-2">Time</th>
                     <th className="text-left py-2">Status</th>
-                    <th className="text-left py-2">Time Stopped</th>
+                    <th className="text-left py-2">Time Pauseped</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -375,16 +375,16 @@ const Timer: React.FC = () => {
       }
 
       {/* Confirmation Dialog */}
-      {isConfirmingStop && (
-        <Dialog open={isConfirmingStop} onOpenChange={dismissStopTimer}>
+      {isConfirmingPause && (
+        <Dialog open={isConfirmingPause} onOpenChange={dismissPauseTimer}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Confirm Stop</DialogTitle>
+              <DialogTitle>Confirm Pause</DialogTitle>
             </DialogHeader>
-            <p>Are you sure to stop the timer?</p>
+            <p>Are you sure to pause the timer?</p>
             <div className="flex justify-end space-x-2">
-              <Button onClick={confirmStopTimer} variant="outline">Yes</Button>
-              <Button onClick={dismissStopTimer} variant="outline">No</Button>
+              <Button onClick={confirmPauseTimer} variant="outline">Yes</Button>
+              <Button onClick={dismissPauseTimer} variant="outline">No</Button>
             </div>
           </DialogContent>
         </Dialog>
