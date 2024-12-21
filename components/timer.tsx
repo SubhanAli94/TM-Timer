@@ -334,6 +334,14 @@ const Timer: React.FC = () => {
       </div>
 
       {
+        speechResults.length === 0 && (
+          <div className="w-full text-center text-gray-600 italic">
+            No time entries logged yet.
+          </div>
+        )
+      }
+
+      {
         speechResults.length > 0 && (
           <div className="w-full">
             <div className="p-6">
