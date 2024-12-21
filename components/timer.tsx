@@ -40,6 +40,12 @@ const Timer: React.FC = () => {
   // Add state for speech results
   const [speechResults, setSpeechResults] = useState<SpeechResult[]>([])
 
+  // Add state for confirmation dialog
+  const [isConfirmingStop, setIsConfirmingStop] = useState(false);
+
+  // Add a new state to track if the timer has been started
+  const [hasStarted, setHasStarted] = useState(false);
+
   const baseOpacity = 0.1
 
   // Green zone opacity: increases from 0-5 minutes
@@ -57,8 +63,10 @@ const Timer: React.FC = () => {
     Math.min(1, time > (greenTime + yellowTime) ? (time - greenTime - yellowTime) / redTime : 0)
   )
 
+  const gracePeriod = 30; // 30 seconds grace period
+
   // Show disqualified when total time is exceeded
-  const showDisqualified = time >= (greenTime + yellowTime + redTime)
+  const showDisqualified = time >= (greenTime + yellowTime + redTime + gracePeriod);
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600)
@@ -70,9 +78,10 @@ const Timer: React.FC = () => {
   const startTimer = useCallback(() => {
     if (!isRunning) {
       setIsRunning(true)
+      setHasStarted(true) // Set hasStarted to true when the timer starts
       const id = setInterval(() => {
         setTime((prevTime) => prevTime + 1)
-      }, 100)
+      }, 1000)
       setIntervalId(id)
     }
   }, [isRunning])
@@ -92,6 +101,9 @@ const Timer: React.FC = () => {
     setYellowTime(180) // Reset to default yellow time (3 minutes)
     setRedTime(120) // Reset to default red time (2 minutes)
     setErrors([]) // Clear any validation errors
+
+    // Set hasStarted to false to reflect that the timer has been reset
+    setHasStarted(false);
   }, [intervalId])
 
   const stopTimer = useCallback(() => {
@@ -101,15 +113,16 @@ const Timer: React.FC = () => {
       setIntervalId(null)
 
       // Add result when stopping
+      const totalTimeLapsed = time + (showDisqualified ? gracePeriod : 0); // Include grace period if disqualified
       const result: SpeechResult = {
         name: speakerName || 'Anonymous Speaker',
-        time: time,
-        status: time < greenTime || time >= (greenTime + yellowTime + redTime) ? 'Disqualified' : 'Qualified',
+        time: totalTimeLapsed,
+        status: time < greenTime || time >= (greenTime + yellowTime + redTime + gracePeriod) ? 'Disqualified' : 'Qualified',
         timestamp: new Date().toLocaleTimeString()
       }
       setSpeechResults(prev => [...prev, result])
     }
-  }, [intervalId, speakerName, time, greenTime, yellowTime, redTime])
+  }, [intervalId, speakerName, time, greenTime, yellowTime, redTime, gracePeriod])
 
   useEffect(() => {
     return () => {
@@ -136,6 +149,30 @@ const Timer: React.FC = () => {
     setErrors(newErrors)
     return newErrors.length === 0
   }
+
+  // Calculate the elapsed time after red time
+  const elapsedGracePeriod = time > (greenTime + yellowTime + redTime) ? Math.min(time - (greenTime + yellowTime + redTime), gracePeriod) : 0;
+
+  // Update the opacity for the grace period box
+  const graceOpacity = time > (greenTime + yellowTime + redTime) ? elapsedGracePeriod / gracePeriod : 0.2; // Faded when not in grace period
+
+  // Function to handle stopping the timer
+  const handleStopTimer = () => {
+    if (isRunning) { // Check if the timer is running
+      setIsConfirmingStop(true); // Show confirmation dialog
+    }
+  };
+
+  // Function to confirm stopping the timer
+  const confirmStopTimer = () => {
+    stopTimer(); // Call the existing stopTimer function
+    setIsConfirmingStop(false); // Close the dialog
+  };
+
+  // Function to dismiss the confirmation dialog
+  const dismissStopTimer = () => {
+    setIsConfirmingStop(false); // Close the dialog
+  };
 
   return (
     <div className="flex flex-col gap-8 mt-10" >
@@ -258,9 +295,9 @@ const Timer: React.FC = () => {
                   disabled={isRunning}
                   className="w-24 bg-green-500"
                   variant={isRunning ? "secondary" : "default"}>
-                  {isRunning ? "Running" : "Start"}
+                  {isRunning ? "Running" : hasStarted ? "Resume" : "Start"}
                 </Button>
-                <Button onClick={stopTimer} className="w-24 bg-red-500 text-white" variant="secondary">
+                <Button onClick={handleStopTimer} className="w-24 bg-red-500 text-white" variant="secondary">
                   Stop
                 </Button>
                 <Button onClick={resetTimer} className="w-24" variant="outline">
@@ -285,6 +322,12 @@ const Timer: React.FC = () => {
                   className="flex-1 bg-red-500 text-white p-2 text-center transition-opacity duration-500"
                 >
                   {Math.floor((redTime) / 60)} Min
+                </div>
+                <div
+                  style={{ opacity: graceOpacity }}
+                  className="flex-1 bg-gray-500 text-white p-2 text-center transition-opacity duration-500"
+                >
+                  {Math.floor(gracePeriod)} Sec
                 </div>
               </div>
               {showDisqualified && (
@@ -330,6 +373,22 @@ const Timer: React.FC = () => {
           </Card>
         )
       }
+
+      {/* Confirmation Dialog */}
+      {isConfirmingStop && (
+        <Dialog open={isConfirmingStop} onOpenChange={dismissStopTimer}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Confirm Stop</DialogTitle>
+            </DialogHeader>
+            <p>Are you sure to stop the timer?</p>
+            <div className="flex justify-end space-x-2">
+              <Button onClick={confirmStopTimer} variant="outline">Yes</Button>
+              <Button onClick={dismissStopTimer} variant="outline">No</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div >
   )
 }
