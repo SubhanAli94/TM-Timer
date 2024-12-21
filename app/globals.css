@@ -75,6 +75,19 @@
   }
 }
 
+/* Add this to your CSS file */
+table {
+  border-collapse: collapse;
+}
+
+th {
+  font-weight: bold;
+}
+
+td {
+  border-bottom: 1px solid #e0e0e0;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

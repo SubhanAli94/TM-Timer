@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -43,9 +42,6 @@ const Timer: React.FC = () => {
   // Add state for confirmation dialog
   const [isConfirmingStop, setIsConfirmingStop] = useState(false);
 
-  // Add a new state to track if the timer has been started
-  const [hasStarted, setHasStarted] = useState(false);
-
   const baseOpacity = 0.1
 
   // Green zone opacity: increases from 0-5 minutes
@@ -78,7 +74,6 @@ const Timer: React.FC = () => {
   const startTimer = useCallback(() => {
     if (!isRunning) {
       setIsRunning(true)
-      setHasStarted(true) // Set hasStarted to true when the timer starts
       const id = setInterval(() => {
         setTime((prevTime) => prevTime + 1)
       }, 1000)
@@ -102,8 +97,6 @@ const Timer: React.FC = () => {
     setRedTime(120) // Reset to default red time (2 minutes)
     setErrors([]) // Clear any validation errors
 
-    // Set hasStarted to false to reflect that the timer has been reset
-    setHasStarted(false);
   }, [intervalId])
 
   const stopTimer = useCallback(() => {
@@ -295,7 +288,7 @@ const Timer: React.FC = () => {
                   disabled={isRunning}
                   className="w-24 bg-green-500"
                   variant={isRunning ? "secondary" : "default"}>
-                  {isRunning ? "Running" : hasStarted ? "Resume" : "Start"}
+                  {isRunning ? "Running" : "Start"}
                 </Button>
                 <Button onClick={handleStopTimer} className="w-24 bg-red-500 text-white" variant="secondary">
                   Stop
@@ -342,35 +335,34 @@ const Timer: React.FC = () => {
 
       {
         speechResults.length > 0 && (
-          <Card className="w-full max-w-md mx-auto">
-            <CardContent className="p-6">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-2">Speaker</th>
-                    <th className="text-left py-2">Time</th>
-                    <th className="text-left py-2">Status</th>
-                    <th className="text-left py-2">Time Stopped</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {speechResults.map((result, index) => (
-                    <tr key={index} className="border-b">
-                      <td className="py-2">{result.name}</td>
-                      <td className="py-2">{formatTime(result.time)}</td>
-                      <td className={`py-2 ${result.status === 'Qualified'
-                        ? 'text-green-600'
-                        : 'text-red-600'
-                        }`}>
-                        {result.status}
-                      </td>
-                      <td className="py-2 text-gray-500">{result.timestamp}</td>
+          <div className="w-full">
+            <div className="p-6">
+              <div className="overflow-hidden rounded-lg border border-gray-100">
+                <table className="w-full text-sm">
+                  <thead className="bg-black text-white">
+                    <tr className="border-b border-gray-400">
+                      <th className="text-left py-2 px-4 border-b border-gray-400">Speaker</th>
+                      <th className="text-left py-2 px-4 border-b border-gray-400">Time</th>
+                      <th className="text-left py-2 px-4 border-b border-gray-400">Status</th>
+                      <th className="text-left py-2 px-4 border-b border-gray-400">Time Stopped</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </CardContent>
-          </Card>
+                  </thead>
+                  <tbody>
+                    {speechResults.map((result, index) => (
+                      <tr key={index} className={`border-b border-gray-200 hover:bg-gray-100 transition-colors duration-200`}>
+                        <td className="py-2 px-4 bg-white text-black border-b border-gray-200 opacity-200">{result.name}</td>
+                        <td className="py-2 px-4 bg-white text-black border-b border-gray-200 opacity-200">{formatTime(result.time)}</td>
+                        <td className={`py-2 px-4 bg-white ${result.status === 'Qualified' ? 'text-green-600' : 'text-red-600'} border-b border-gray-200 opacity-200`}>
+                          {result.status}
+                        </td>
+                        <td className="py-2 px-4 bg-white text-black border-b border-gray-200 opacity-200">{result.timestamp}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         )
       }
 
